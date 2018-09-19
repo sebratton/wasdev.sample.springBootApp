@@ -1,18 +1,19 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.15.RELEASE'
+		//springBootVersion = '1.5.15.RELEASE'
+		springBootVersion = '2.0.4.RELEASE'
 	}
 	repositories {
+	   mavenLocal()
 		mavenCentral()
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.5'
+		classpath 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.6-SNAPSHOT'
 	}
 }
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'liberty'
 
@@ -23,8 +24,31 @@ sourceCompatibility = 1.8
 repositories {
 	mavenCentral()
 }
-
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-web')
+	compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+liberty {
+      cleanDir {
+        workarea = false
+      }
+     thin {
+         //sourceAppPath = './libs/file.jar'
+    }
+}
+//liberty.install.version = '18.0.0_02'
+//project.liberty.install.type = 'kernel'
+//liberty.thin.deployToDropins = '/Users/sbratton/src'
+
+
+liberty {
+    server {
+    looseApplication = false
+    //apps = [bootJar]
+        features {
+            name = [ 'springBoot-2.0' ]
+            acceptLicense = true
+        }
+    }
 }
